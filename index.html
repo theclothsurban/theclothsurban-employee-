@@ -1,1 +1,85 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TheClothsUrban – Employee PDF Upload</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+    }
+    .container {
+      max-width: 420px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #000;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    #status {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>TheClothsUrban</h2>
+  <p>Employee PDF Upload Portal</p>
+
+  <input type="file" id="pdfFile" accept="application/pdf"><br><br>
+  <button onclick="uploadPDF()">Upload PDF</button>
+
+  <p id="status"></p>
+</div>
+
+<script>
+const WEB_APP_URL = "1QRdAkXotwbeQhKTNlpNAL5pTG70_E2Sq";
+
+function uploadPDF() {
+  const file = document.getElementById("pdfFile").files[0];
+  if (!file) {
+    alert("Please select PDF");
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function() {
+    const base64 = reader.result.split(",")[1];
+
+    document.getElementById("status").innerText = "Uploading...";
+
+    fetch(WEB_APP_URL, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        filename: file.name,
+        file: base64
+      })
+    })
+    .then(() => {
+      document.getElementById("status").innerText = "✅ Upload Successful";
+    })
+    .catch(() => {
+      document.getElementById("status").innerText = "❌ Upload Failed";
+    });
+  };
+
+  reader.readAsDataURL(file);
+}
+</script>
+
+</body>
+</html>
