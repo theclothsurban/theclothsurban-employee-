@@ -38,7 +38,8 @@
 <div class="container">
   <h2>TheClothsUrban</h2>
   <p>Employee PDF Upload Portal</p>
-
+  <input type="text" id="empName" placeholder="Enter Employee Name"
+style="width:100%;padding:10px;margin-bottom:10px;">
   <input type="file" id="pdfFile" accept="application/pdf"><br><br>
   <button onclick="uploadPDF()">Upload PDF</button>
 
@@ -49,11 +50,12 @@
 const WEB_APP_URL = "1QRdAkXotwbeQhKTNlpNAL5pTG70_E2Sq";
 
 function uploadPDF() {
-  const file = document.getElementById("pdfFile").files[0];
-  if (!file) {
-    alert("Please select PDF");
-    return;
-  }
+  const empName = document.getElementById("empName").value;
+if (!empName) {
+  alert("Please enter employee name");
+  return;
+}
+  
 
   const reader = new FileReader();
   reader.onload = function() {
@@ -65,9 +67,11 @@ function uploadPDF() {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
-        filename: file.name,
-        file: base64
-      })
+  filename: empName + "_" + file.name,
+  employee: empName,
+  file: base64
+})
+      
     })
     .then(() => {
       document.getElementById("status").innerText = "✅ Upload Successful";
