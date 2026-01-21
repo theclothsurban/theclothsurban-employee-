@@ -1,83 +1,83 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
   <title>TheClothsUrban – Employee PDF Upload</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f4f4f4;
+      background: #f2f2f2;
+      padding: 20px;
     }
-    .container {
-      max-width: 420px;
-      margin: 50px auto;
+    .box {
+      max-width: 400px;
+      margin: auto;
       background: #fff;
-      padding: 25px;
+      padding: 20px;
       border-radius: 10px;
       text-align: center;
-      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+    input, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
     }
     button {
-      width: 100%;
-      padding: 12px;
-      background: #000;
-      color: #fff;
+      background: black;
+      color: white;
       border: none;
-      border-radius: 6px;
       font-size: 16px;
     }
-    #status {
-      margin-top: 10px;
+    #msg {
+      margin-top: 15px;
+      font-weight: bold;
     }
   </style>
 </head>
+
 <body>
+  <div class="box">
+    <h2>TheClothsUrban</h2>
+    <p>Employee PDF Upload</p>
 
-<div class="container">
-  <h2>TheClothsUrban</h2>
-  <p>Employee PDF Upload Portal</p>
-  <input type="text" id="empName" placeholder="Enter Employee Name"
-style="width:100%;padding:10px;margin-bottom:10px;">
-  <input type="file" id="pdfFile" accept="application/pdf"><br><br>
-  <button onclick="uploadPDF()">Upload PDF</button>
+    <input type="text" id="empName" placeholder="Employee Name" />
+    <input type="file" id="pdfFile" accept="application/pdf" />
 
-  <p id="status"></p>
-</div>
+    <button onclick="uploadPDF()">Upload PDF</button>
+
+    <div id="msg"></div>
+  </div>
 
 <script>
-const WEB_APP_URL = "1QRdAkXotwbeQhKTNlpNAL5pTG70_E2Sq";
-
 function uploadPDF() {
-  const empName = document.getElementById("empName").value;
-if (!empName) {
-  alert("Please enter employee name");
-  return;
-}
-  
+  const name = document.getElementById("empName").value;
+  const fileInput = document.getElementById("pdfFile");
+  const msg = document.getElementById("msg");
 
+  if (!name || fileInput.files.length === 0) {
+    msg.innerHTML = "❌ Name aur PDF dono required";
+    return;
+  }
+
+  const file = fileInput.files[0];
   const reader = new FileReader();
-  reader.onload = function() {
+
+  reader.onload = function () {
     const base64 = reader.result.split(",")[1];
 
-    document.getElementById("status").innerText = "Uploading...";
-
-    fetch(WEB_APP_URL, {
+    fetch("https://script.google.com/macros/s/AKfycbwKMN5ntrnBdsATDvzEcgQnBgauEV1hboDd6WFeELW3-aD7BpIWLEelOtgzfkx7THE/exec", {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
-  filename: empName + "_" + file.name,
-  employee: empName,
-  file: base64
-})
-      
+        filename: name + "_" + file.name,
+        file: base64
+      })
     })
-    .then(() => {
-      document.getElementById("status").innerText = "✅ Upload Successful";
+    .then(res => res.text())
+    .then(text => {
+      msg.innerHTML = "✅ Upload Successful";
     })
-    .catch(() => {
-      document.getElementById("status").innerText = "❌ Upload Failed";
+    .catch(err => {
+      msg.innerHTML = "❌ Upload Failed";
     });
   };
 
