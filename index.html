@@ -65,7 +65,7 @@ function uploadPDF() {
   reader.onload = function () {
     const base64 = reader.result.split(",")[1];
 
-    fetch("https://script.google.com/macros/s/AKfycbwKMN5ntrnBdsATDvzEcgQnBgauEV1hboDd6WFeELW3-aD7BpIWLEelOtgzfkx7THE/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbww4DcUhSEV0lppBVx1Sg5L6ZGg07t--Lylfz6hvzgBtjg1n0roGcUqAzi1HxOrSsN4/exec", {
       method: "POST",
       body: JSON.stringify({
         filename: name + "_" + file.name,
