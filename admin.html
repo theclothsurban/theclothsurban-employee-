@@ -1,1 +1,54 @@
-s
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TheClothsUrban – Admin Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial;
+      background: #f2f2f2;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+    }
+    .box {
+      background: white;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+    }
+    a {
+      text-decoration: none;
+      color: black;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>TheClothsUrban – Admin Panel</h2>
+  <div id="list">Loading PDFs...</div>
+
+<script>
+fetch("https://script.google.com/macros/s/AKfycbwKMN5ntrnBdsATDvzEcgQnBgauEV1hboDd6WFeELW3-aD7BpIWLEelOtgzfkx7THE/exec")
+.then(res => res.json())
+.then(data => {
+  let html = "";
+  data.reverse().forEach(file => {
+    html += `
+      <div class="box">
+        📄 ${file.name} <br>
+        <a href="${file.url}" target="_blank">Open PDF</a>
+      </div>
+    `;
+  });
+  document.getElementById("list").innerHTML = html;
+})
+.catch(() => {
+  document.getElementById("list").innerHTML = "Error loading files";
+});
+</script>
+
+</body>
+</html>
