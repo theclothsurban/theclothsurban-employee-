@@ -1,86 +1,76 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>TheClothsUrban – Employee PDF Upload</title>
+  <title>TheClothsUrban | Employee Panel</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      padding: 20px;
+    body{
+      background:#0f0f0f;
+      font-family:Poppins;
+      color:#fff;
+      margin:0;
+      padding:20px;
     }
-    .box {
-      max-width: 400px;
-      margin: auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
+    .box{
+      max-width:400px;
+      margin:auto;
+      background:#1a1a1a;
+      padding:20px;
+      border-radius:12px;
     }
-    input, button {
-      width: 100%;
-      margin-top: 10px;
-      padding: 10px;
+    h2{
+      text-align:center;
+      color:#c9a24d;
     }
-    button {
-      background: black;
-      color: white;
-      border: none;
-      font-size: 16px;
+    input,button{
+      width:100%;
+      margin-top:12px;
+      padding:12px;
+      border-radius:8px;
+      border:none;
+      font-size:15px;
     }
-    #msg {
-      margin-top: 15px;
-      font-weight: bold;
+    button{
+      background:#c9a24d;
+      color:#000;
+      font-weight:bold;
     }
   </style>
 </head>
-
 <body>
-  <div class="box">
-    <h2>TheClothsUrban</h2>
-    <p>Employee PDF Upload</p>
 
-    <input type="text" id="empName" placeholder="Employee Name" />
-    <input type="file" id="pdfFile" accept="application/pdf" />
+<div class="box">
+  <h2>Employee PDF Upload</h2>
 
-    <button onclick="uploadPDF()">Upload PDF</button>
+  <input type="text" id="name" placeholder="Employee Name" value="Sirajun">
+  <input type="text" id="title" placeholder="Design Title">
+  <input type="file" id="file" accept="application/pdf">
+  <button onclick="upload()">Upload PDF</button>
 
-    <div id="msg"></div>
-  </div>
+  <p id="msg"></p>
+</div>
 
 <script>
-function uploadPDF() {
-  const name = document.getElementById("empName").value;
-  const fileInput = document.getElementById("pdfFile");
-  const msg = document.getElementById("msg");
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbww4DcUhSEV0lppBVx1Sg5L6ZGg07t--Lylfz6hvzgBtjg1n0roGcUqAzi1HxOrSsN4/exec";
 
-  if (!name || fileInput.files.length === 0) {
-    msg.innerHTML = "❌ Name aur PDF dono required";
-    return;
-  }
+function upload(){
+  let file = document.getElementById("file").files[0];
+  let reader = new FileReader();
 
-  const file = fileInput.files[0];
-  const reader = new FileReader();
-
-  reader.onload = function () {
-    const base64 = reader.result.split(",")[1];
-
-    fetch("https://script.google.com/macros/s/AKfycbww4DcUhSEV0lppBVx1Sg5L6ZGg07t--Lylfz6hvzgBtjg1n0roGcUqAzi1HxOrSsN4/exec", {
-      method: "POST",
-      body: JSON.stringify({
-        filename: name + "_" + file.name,
-        file: base64
+  reader.onload = function(){
+    fetch(SCRIPT_URL,{
+      method:"POST",
+      body:JSON.stringify({
+        filename:file.name,
+        file:reader.result.split(",")[1]
       })
     })
-    .then(res => res.text())
-    .then(text => {
-      msg.innerHTML = "✅ Upload Successful";
-    })
-    .catch(err => {
-      msg.innerHTML = "❌ Upload Failed";
+    .then(res=>res.text())
+    .then(data=>{
+      document.getElementById("msg").innerHTML="✅ Uploaded Successfully";
     });
-  };
-
+  }
   reader.readAsDataURL(file);
 }
 </script>
