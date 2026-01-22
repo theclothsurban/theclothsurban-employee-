@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>TheClothsUrban | Employee Upload</title>
+  <title>TheClothsUrban | Employee Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
   <style>
@@ -12,13 +12,16 @@
       padding:20px;
     }
     .box{
-      max-width:400px;
+      max-width:380px;
       margin:auto;
       background:#1a1a1a;
-      padding:20px;
+      padding:25px;
       border-radius:12px;
     }
-    h2{ text-align:center; color:#c9a24d; }
+    h2{
+      text-align:center;
+      color:#c9a24d;
+    }
     input,button{
       width:100%;
       margin-top:12px;
@@ -29,7 +32,6 @@
     }
     button{
       background:#c9a24d;
-      color:#000;
       font-weight:bold;
     }
     #uploadBox{ display:none; }
@@ -38,53 +40,57 @@
 
 <body>
 
-<!-- 🔐 LOGIN BOX -->
+<!-- 🔐 LOGIN -->
 <div class="box" id="loginBox">
   <h2>Employee Login</h2>
-  <input type="password" id="password" placeholder="Enter Password">
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
   <button onclick="login()">Login</button>
   <p id="loginMsg"></p>
 </div>
 
-<!-- 📤 UPLOAD BOX -->
+<!-- 📤 UPLOAD -->
 <div class="box" id="uploadBox">
   <h2>PDF Upload</h2>
-  <input type="text" id="name" value="Sirajun">
+  <input type="text" id="emp" readonly>
   <input type="file" id="file" accept="application/pdf">
   <button onclick="upload()">Upload PDF</button>
   <p id="msg"></p>
 </div>
 
 <script>
-const PASSWORD = "Sirajun2005";   // 🔴 YAHAN PASSWORD CHANGE KAR SAKTE HO
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbww4DcUhSEV0lppBVx1Sg5L6ZGg07t--Lylfz6hvzgBtjg1n0roGcUqAzi1HxOrSsN4/exec";
 
 function login(){
-  let p = document.getElementById("password").value;
-  if(p === PASSWORD){
-    document.getElementById("loginBox").style.display="none";
-    document.getElementById("uploadBox").style.display="block";
-  } else {
-    document.getElementById("loginMsg").innerHTML="❌ Wrong Password";
-  }
+  const u = username.value;
+  const p = password.value;
+
+  fetch(`${SCRIPT_URL}?action=login&username=${u}&password=${p}`)
+    .then(res => res.text())
+    .then(r => {
+      if(r === "SUCCESS"){
+        loginBox.style.display="none";
+        uploadBox.style.display="block";
+        emp.value = u;
+      } else {
+        loginMsg.innerHTML="❌ Invalid Login";
+      }
+    });
 }
 
 function upload(){
-  let file = document.getElementById("file").files[0];
-  let reader = new FileReader();
+  const file = document.getElementById("file").files[0];
+  const reader = new FileReader();
 
   reader.onload = function(){
     fetch(SCRIPT_URL,{
       method:"POST",
       body:JSON.stringify({
-        filename:file.name,
-        file:reader.result.split(",")[1]
+        filename: emp.value + "_" + file.name,
+        file: reader.result.split(",")[1]
       })
     })
-    .then(res=>res.text())
-    .then(()=>{
-      document.getElementById("msg").innerHTML="✅ PDF Uploaded Successfully";
-    });
+    .then(()=>msg.innerHTML="✅ Uploaded Successfully");
   }
   reader.readAsDataURL(file);
 }
