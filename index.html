@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>TheClothsUrban | Employee Panel</title>
+  <title>TheClothsUrban | Employee Upload</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
   <style>
@@ -9,7 +9,6 @@
       background:#0f0f0f;
       font-family:Poppins;
       color:#fff;
-      margin:0;
       padding:20px;
     }
     .box{
@@ -19,10 +18,7 @@
       padding:20px;
       border-radius:12px;
     }
-    h2{
-      text-align:center;
-      color:#c9a24d;
-    }
+    h2{ text-align:center; color:#c9a24d; }
     input,button{
       width:100%;
       margin-top:12px;
@@ -36,23 +32,42 @@
       color:#000;
       font-weight:bold;
     }
+    #uploadBox{ display:none; }
   </style>
 </head>
+
 <body>
 
-<div class="box">
-  <h2>Employee PDF Upload</h2>
+<!-- 🔐 LOGIN BOX -->
+<div class="box" id="loginBox">
+  <h2>Employee Login</h2>
+  <input type="password" id="password" placeholder="Enter Password">
+  <button onclick="login()">Login</button>
+  <p id="loginMsg"></p>
+</div>
 
-  <input type="text" id="name" placeholder="Employee Name" value="Sirajun">
-  <input type="text" id="title" placeholder="Design Title">
+<!-- 📤 UPLOAD BOX -->
+<div class="box" id="uploadBox">
+  <h2>PDF Upload</h2>
+  <input type="text" id="name" value="Sirajun">
   <input type="file" id="file" accept="application/pdf">
   <button onclick="upload()">Upload PDF</button>
-
   <p id="msg"></p>
 </div>
 
 <script>
+const PASSWORD = "Sirajun2005";   // 🔴 YAHAN PASSWORD CHANGE KAR SAKTE HO
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbww4DcUhSEV0lppBVx1Sg5L6ZGg07t--Lylfz6hvzgBtjg1n0roGcUqAzi1HxOrSsN4/exec";
+
+function login(){
+  let p = document.getElementById("password").value;
+  if(p === PASSWORD){
+    document.getElementById("loginBox").style.display="none";
+    document.getElementById("uploadBox").style.display="block";
+  } else {
+    document.getElementById("loginMsg").innerHTML="❌ Wrong Password";
+  }
+}
 
 function upload(){
   let file = document.getElementById("file").files[0];
@@ -67,8 +82,8 @@ function upload(){
       })
     })
     .then(res=>res.text())
-    .then(data=>{
-      document.getElementById("msg").innerHTML="✅ Uploaded Successfully";
+    .then(()=>{
+      document.getElementById("msg").innerHTML="✅ PDF Uploaded Successfully";
     });
   }
   reader.readAsDataURL(file);
